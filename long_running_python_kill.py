@@ -54,7 +54,7 @@ with open(x, "r") as file:
                 current_time = now.strftime("%H:%M:%S")
                 tim_delta=datetime.strptime(current_time,"%H:%M:%S")-datetime.strptime(start_te,"%H:%M:%S")
                 error_type="Run Time : " + str(tim_delta)
-                if tim_delta > timedelta(seconds=3600):
+                if tim_delta > timedelta(seconds=10800):
                     alert(error_heading,error_type,pid,cmd)
                 else:
                     pass
