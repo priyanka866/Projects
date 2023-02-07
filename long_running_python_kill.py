@@ -23,8 +23,10 @@ def connect(config_path):
         return creds
     print("=== Config file loaded")
 
-#config file contains my creds in json format
-#email/slack notification can also be created instead of killing the process
+#Using centos OS for the execution.The process format for py_grep will be differnt for different OS
+#Config file contains my creds in json format
+#Email/slack notification can also be created instead of killing th process
+#The process format for py_grep will be differnt for different OS
 
 CONFIG_PATH = os.environ.get('CONFIG_PATH', None)
 db_connect = connect(CONFIG_PATH)
