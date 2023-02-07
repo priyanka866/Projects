@@ -6,7 +6,6 @@ Created on Tue Feb  7 17:59:06 2023
 
 @author: priyankapandey
 """
-
 import os
 import sys
 from datetime import timedelta, datetime
@@ -24,10 +23,11 @@ def connect(config_path):
         return creds
     print("=== Config file loaded")
 
+#config file contains my creds in json format
+#email/slack notification can also be created instead of killing the process
+
 CONFIG_PATH = os.environ.get('CONFIG_PATH', None)
 db_connect = connect(CONFIG_PATH)
-sys.path.append(db_connect['Path']['utilities'])
-from utilities import  alert
 print("===import complete")
 
 ###long running python code 
