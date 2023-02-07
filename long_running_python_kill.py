@@ -55,7 +55,7 @@ with open(x, "r") as file:
                 tim_delta=datetime.strptime(current_time,"%H:%M:%S")-datetime.strptime(start_te,"%H:%M:%S")
                 error_type="Run Time : " + str(tim_delta)
                 if tim_delta > timedelta(seconds=10800):
-                    alert(error_heading,error_type,pid,cmd)
+                    print(f"Time limit exceeded for {pid} for {cmd}")
                 else:
                     pass
             except ValueError:
