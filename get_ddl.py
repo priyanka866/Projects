@@ -5,7 +5,6 @@ Created on Tue Feb  7 17:59:06 2023
 
 @author: priyankapandey
 """
-
 from ruamel import yaml
 import json
 import sys
@@ -14,7 +13,7 @@ from sshtunnel import SSHTunnelForwarder
 import mysql.connector
 
 #reading YML file that conatins all tables name
-YML_PATH = "/Users/priyankapandey/Documents/data-science/data-lake/data-pipeline/config/prod_servify_in.yml"
+YML_PATH = "YML path"
 with open(YML_PATH, 'r') as stream:
     data_loaded = yaml.safe_load(stream)
 
@@ -25,22 +24,22 @@ def connect(config_path):
         return creds
     print("=== Config file loaded")
 
-CONFIG_PATH = '/Users/priyankapandey/Documents/data-science/data-lake/data-pipeline/config/config.json' #os.environ.get('CONFIG_PATH', None)
+CONFIG_PATH = os.environ.get('CONFIG_PATH', None)
 db_connect = connect(CONFIG_PATH)
 sys.path.append(db_connect['Path']['utilities'])
 print("===import complete")
 
-src_db= 'metricDB'
+src_db= 'your database name'
 
 
 def ddl(mysql_json,server,table):
     with open(mysql_json) as file:
         mysqldb_connect= json.load(file)
         mysqldb=mysqldb_connect[server]
-        pkeyfilepath = '/Users/priyankapandey/.ssh/id_rsa'
+        pkeyfilepath = 'ssh key'
         mypkey = paramiko.RSAKey.from_private_key_file(pkeyfilepath, password='')
-        ssh_host = 'ssh.servify.tech'
-        ssh_user = 'jumpuser'
+        ssh_host = 'hostname'
+        ssh_user = 'user'
         ssh_port = 22
         tunnel_parts = SSHTunnelForwarder((ssh_host, ssh_port), ssh_username=ssh_user, ssh_pkey=mypkey, remote_bind_address=(mysqldb['host'],  mysqldb['port']))
         tunnel_parts.start()
@@ -49,30 +48,29 @@ def ddl(mysql_json,server,table):
                                             user=mysqldb['user'],
                                             password=mysqldb['password'],
                                             port = tunnel_parts.local_bind_port)
-
         connection._open_connection()
-        cursor = connection.cursor(buffered=True)
-        cursor.execute('''SHOW CREATE TABLE {} ;'''.format(table))
+        cursor = connection.cursor()
+        cursor.execute('''SHOW CREATE TABLE {} ;'''.format(table))        
         output = cursor.fetchone()[1]
+        # print(output)
         cursor.close()
         connection.close()
         return output
 
-
+res = []
 
 for table in data_loaded:
     print(table)
-    ddl=  ddl(CONFIG_PATH,src_db,table)
-    
-
-#and write it to the file 
-with open('/Users/priyankapandey/Desktop/ddl.sql', 'w') as file: 
-        file.write(ddl)   
-
-
-
-
-
+    ddl_data=  ddl(CONFIG_PATH,src_db,table.lower()) + ";"
+    res.append ("\n"+"#########"+ table +"#########" +"\n")
+    res.append("\n")
+    res.append(ddl_data) 
+    res.append("\n")
+    #and write it to the file 
+    with open('/Users/priyankapandey/Desktop/prod_servify_ddl.sql', 'w') as file:     
+            file.writelines(res) 
+            file.write("\n")
+            file.close()
 
 
 
