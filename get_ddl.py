@@ -67,10 +67,11 @@ for table in data_loaded:
     res.append(ddl_data) 
     res.append("\n")
     #and write it to the file 
-    with open('/Users/priyankapandey/Desktop/prod_servify_ddl.sql', 'w') as file:     
+    with open('file_name', 'w') as file:     
             file.writelines(res) 
             file.write("\n")
             file.close()
+
 
 
 
